@@ -2,15 +2,19 @@
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {first, map} from 'rxjs/operators';
 
 import { environment } from '@environments/environment';
 import { User } from '@app/_models';
+import CryptoJS from 'crypto-js';
+import axios from 'axios';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
     private userSubject: BehaviorSubject<User>;
     public user: Observable<User>;
+    // helper methods
+    private refreshTokenTimeout;
 
     constructor(
         private router: Router,
@@ -26,11 +30,11 @@ export class AuthenticationService {
 
     login(username: string, password: string) {
         return this.http.post<any>(`${environment.apiUrl}/users/authenticate`, { username, password }, { withCredentials: true })
-            .pipe(map(user => {
-                this.userSubject.next(user);
-                this.startRefreshTokenTimer();
-                return user;
-            }));
+          .pipe(map(user => {
+            this.userSubject.next(user);
+            this.startRefreshTokenTimer();
+            return user;
+          }));
     }
 
     logout() {
@@ -49,17 +53,13 @@ export class AuthenticationService {
             }));
     }
 
-    // helper methods
-
-    private refreshTokenTimeout;
-
     private startRefreshTokenTimer() {
         // parse json object from base64 encoded jwt token
         const jwtToken = JSON.parse(atob(this.userValue.jwtToken.split('.')[1]));
 
         // set a timeout to refresh the token a minute before it expires
         const expires = new Date(jwtToken.exp * 1000);
-        const timeout = expires.getTime() - Date.now() - (60 * 1000);
+        const timeout = expires.getTime() - Date.now() - (1000);
         this.refreshTokenTimeout = setTimeout(() => this.refreshToken().subscribe(), timeout);
     }
 

@@ -17,10 +17,10 @@ export class LoginComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private authenticationService: AuthenticationService
-    ) { 
+        private authenticationService: AuthenticationService,
+    ) {
         // redirect to home if already logged in
-        if (this.authenticationService.userValue) { 
+        if (this.authenticationService.userValue) {
             this.router.navigate(['/']);
         }
     }
@@ -48,15 +48,15 @@ export class LoginComponent implements OnInit {
 
         this.loading = true;
         this.authenticationService.login(this.f.username.value, this.f.password.value)
-            .pipe(first())
-            .subscribe({
-                next: () => {
-                    this.router.navigate([this.returnUrl]);
-                },
-                error: error => {
-                    this.error = error;
-                    this.loading = false;
-                }
-            });
+          .pipe(first())
+          .subscribe({
+            next: () => {
+              this.router.navigate([this.returnUrl]);
+            },
+            error: error => {
+              this.error = error;
+              this.loading = false;
+            }
+          });
     }
 }
