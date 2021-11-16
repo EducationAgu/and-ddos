@@ -22,6 +22,7 @@
         "@types/crypto-js": "^4.0.2",
         "blueimp-md5": "^2.19.0",
         "crypto-js": "^4.1.1",
+        "node-forge": "^0.10.0",
         "rxjs": "^6.5.4",
         "tslib": "^1.10.0",
         "zone.js": "^0.10.2"
