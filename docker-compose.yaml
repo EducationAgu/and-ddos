@@ -1,0 +1,10 @@
+version: '3.5'
+
+services:
+  frontend:
+    build:
+      context: .
+    ports:
+      - "12000:80"
+    networks:
+      proxynet:
